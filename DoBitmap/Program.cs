@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace DoBitmap
 {
@@ -10,8 +11,12 @@ namespace DoBitmap
     {
         static void Main(string[] args)
         {
-            // TEst
-            /// rshgjqsdgfhsgeufgsdkhvgfkUDGSFKYgqdfkjDHSG
+            string path = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001.bmp";
+
+            MyBTM test = new MyBTM(path);
+
+            Console.ReadKey();
+            
         }
     }
 }
