@@ -14,6 +14,7 @@ namespace DoBitmap
             string path = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001.bmp";
 
             MyBTM test = new MyBTM(path);
+            test.toString();
 
             Console.ReadKey();
             
