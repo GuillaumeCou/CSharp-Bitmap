@@ -15,6 +15,8 @@ namespace DoBitmap
         byte[] headerInfo = new byte[50];
         byte[] image;
 
+        Pixel[] Pix;
+
         public MyBTM(string Path)
         {
             DataBitmap = File.ReadAllBytes(Path);
@@ -33,7 +35,22 @@ namespace DoBitmap
             for (int i = 0; i < taille ; i++)
                 image[i] = DataBitmap[i + 64];
 
+            toPixel();
+        }
 
+        private void toPixel()
+        {
+            Pix = new Pixel[image.Length / 3];
+
+            byte[] PrePix = new byte[3];
+            for(int i = 0; i < image.Length/3; i++)
+            {
+                for(int j= 0; i < 3; j++)
+                {
+                    PrePix[j] = image[i*3 + j];
+                }
+                Pix[i] = new Pixel(PrePix);
+            }
         }
 
         public void toString()
