@@ -11,13 +11,14 @@ namespace DoBitmap
     {
         static void Main(string[] args)
         {
-            string path = @"C:\Users\couzi\Documents\Cours\Projet Info\lac_en_montagne.bmp";
+            string path = @"C:\Users\couzi\Documents\Cours\Projet Info\test.bmp";
             string patharrivee = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001-1.bmp";
 
             MyBTM test = new MyBTM(path);
 
+            test.toString();
 
-            test.Exporter(patharrivee);
+            Console.WriteLine();
             
         }
     }

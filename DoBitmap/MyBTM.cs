@@ -16,7 +16,11 @@ namespace DoBitmap
         byte[] image;
         string path;
 
-        Pixel[] Pix;
+        int largeur = 0;
+        int hauteur = 0;
+        int taille;
+
+        Pixel[,] Pix;
 
         public string Path
         {
@@ -43,10 +47,16 @@ namespace DoBitmap
                 headerInfo[i] = DataBitmap[i + 14];
             }
 
-            int taille = DataBitmap.Length-54;
+            byte[] largeurBinaire = { headerInfo[4], headerInfo[5], headerInfo[6], headerInfo[7] };
+            byte[] hauteurBinaire = { headerInfo[8], headerInfo[9], headerInfo[10], headerInfo[11] };
+
+            largeur = BitConverter.ToInt32(largeurBinaire,0);
+            hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
+
+            taille = (largeur * hauteur)*3;
 
             image = new byte[taille];
-            for (int i = 0; i < taille ; i++)
+            for (int i = 0; i < taille; i++)
                 image[i] = DataBitmap[i + 54];
 
             toPixel();
@@ -57,16 +67,19 @@ namespace DoBitmap
         /// </summary>
         private void toPixel()
         {
-            Pix = new Pixel[image.Length / 3];
+            Pix = new Pixel[hauteur, largeur];
 
             byte[] PrePix = new byte[3];
-            for(int i = 0; i < image.Length/3; i++)
+            int index = taille - 1;
+
+            for (int i = 0; i < hauteur; i++)
             {
-                for(int j= 0; j < 3; j++)
+                for (int j = 0; j < largeur; j++)
                 {
-                    PrePix[j] = image[i*3 + j];
+                    Pix[hauteur - 1 - i, largeur - 1 - j] = new Pixel(new byte[] { DataBitmap[index - 2], DataBitmap[index - 1], DataBitmap[index] });
                 }
-                Pix[i] = new Pixel(PrePix);
+
+                index -= 3;
             }
         }
 
@@ -99,7 +112,7 @@ namespace DoBitmap
         /// </summary>
         public void SupprimerBleu()
         {
-            foreach(Pixel p in Pix)
+            foreach (Pixel p in Pix)
             {
                 p.AttenuerBleu(255);
             }
@@ -132,11 +145,17 @@ namespace DoBitmap
         /// <param name="Path">Chemin de destination</param>
         public void Exporter(string PathDestination)
         {
-            for(int i = 0; i < DataBitmap.Length-54; i+=3)
+            int index = taille - 1+54;
+
+
+            for(int i = 0; i< hauteur; i++)
             {
-                for(int j = 0; j < 3; j++)
+                for(int j =0; j < largeur; j++)
                 {
-                    DataBitmap[(i + 54 + j)] = Pix[(i/3)].Exporter(j);
+                    for(int o = 0; o < 3; o++)
+                    {
+                        DataBitmap[index--] = Pix[i, j].Exporter(o);
+                    }
                 }
             }
 
