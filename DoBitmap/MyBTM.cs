@@ -14,30 +14,47 @@ namespace DoBitmap
         byte[] header = new byte[14];
         byte[] headerInfo = new byte[50];
         byte[] image;
+        string path;
 
         Pixel[] Pix;
 
+        public string Path
+        {
+            get
+            {
+                return path;
+            }
+        }
+
+        /// <summary>
+        /// Initialise une nouvelle instance de la classe "MyBTM"
+        /// </summary>
+        /// <param name="Path">Chemin absolu menant au fichier bitmap</param>
         public MyBTM(string Path)
         {
+            path = Path;
             DataBitmap = File.ReadAllBytes(Path);
 
             for (int i = 0; i < 14; i++)
                 header[i] = DataBitmap[i];
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 40; i++)
             {
                 headerInfo[i] = DataBitmap[i + 14];
             }
 
-            int taille = DataBitmap.Length-64;
+            int taille = DataBitmap.Length-54;
 
             image = new byte[taille];
             for (int i = 0; i < taille ; i++)
-                image[i] = DataBitmap[i + 64];
+                image[i] = DataBitmap[i + 54];
 
             toPixel();
         }
 
+        /// <summary>
+        /// Fonction convertissant les données image en un tableau de pixels.
+        /// </summary>
         private void toPixel()
         {
             Pix = new Pixel[image.Length / 3];
@@ -45,7 +62,7 @@ namespace DoBitmap
             byte[] PrePix = new byte[3];
             for(int i = 0; i < image.Length/3; i++)
             {
-                for(int j= 0; i < 3; j++)
+                for(int j= 0; j < 3; j++)
                 {
                     PrePix[j] = image[i*3 + j];
                 }
@@ -53,6 +70,9 @@ namespace DoBitmap
             }
         }
 
+        /// <summary>
+        /// Fonction qui affiche dans la console, les différentes données du fichier Bitmap
+        /// </summary>
         public void toString()
         {
             string StringHeader = null;
@@ -72,6 +92,46 @@ namespace DoBitmap
             Console.WriteLine("IMAGE : \n \n" + StringImage);
 
 
+        }
+
+        public void SupprimerBleu()
+        {
+            foreach(Pixel p in Pix)
+            {
+                p.AttenuerBleu(255);
+            }
+        }
+        public void SupprimerRouge()
+        {
+            foreach (Pixel p in Pix)
+            {
+                p.AttenuerRouge(255);
+            }
+        }
+        public void SupprimerVert()
+        {
+            foreach (Pixel p in Pix)
+            {
+                p.AttenuerVert(255);
+            }
+        }
+
+
+        /// <summary>
+        /// Fonction qui exporte et convertit les données binaires en fichier bitmap
+        /// </summary>
+        /// <param name="Path">Chemin de destination</param>
+        public void Exporter(string PathDestination)
+        {
+            for(int i = 0; i < DataBitmap.Length-54; i+=3)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+                    DataBitmap[(i + 54 + j)] = Pix[(i/3)].Exporter(j);
+                }
+            }
+
+            File.WriteAllBytes(PathDestination, DataBitmap);
         }
     }
 }
