@@ -86,40 +86,31 @@ namespace DoBitmap
             }
         }
 
-        /// <summary>
-        /// Fonction qui atténue la couleur.
-        /// </summary>
-        /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerBleu(int attenuation)
+        public void Attenuer(int attenuation, char RVB)
         {
-            if (attenuation >= bleu)
-                bleu = 0;
-            else
-                bleu -= Math.Abs(attenuation);
-        }
-
-        /// <summary>
-        /// Fonction qui atténue la couleur.
-        /// </summary>
-        /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerVert(int attenuation)
-        {
-            if (attenuation >= vert)
-                vert = 0;
-            else
-                vert -= Math.Abs(attenuation);
-        }
-
-        /// <summary>
-        /// Fonction qui atténue la couleur.
-        /// </summary>
-        /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerRouge(int attenuation)
-        {
-            if (attenuation >= rouge)
-                rouge = 0;
-            else
-                rouge -= Math.Abs(attenuation);
+            switch (RVB)
+            {
+                default:
+                    break;
+                case 'R':
+                    if (attenuation >= 100)
+                        rouge = 0;
+                    else
+                        rouge = rouge * (1 - Math.Abs(attenuation)/100);
+                    break;
+                case 'V':
+                    if (attenuation >= 100)
+                        vert = 0;
+                    else
+                        vert = vert*(1 - Math.Abs(attenuation) / 100);
+                    break;
+                case 'B':
+                    if (attenuation >= 100)
+                        bleu = 0;
+                    else
+                        bleu = bleu*(1 - Math.Abs(attenuation) / 100);
+                    break;
+            }
         }
     }
 }

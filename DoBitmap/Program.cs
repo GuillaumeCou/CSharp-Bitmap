@@ -15,8 +15,11 @@ namespace DoBitmap
             string patharrivee = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001-1.bmp";
 
             MyBTM test = new MyBTM(path);
-            test.SupprimerBleu();
-            test.SupprimerVert();
+
+            //Outils.AttenuerCouleur(test, 'B', 50);
+            Outils.AttenuerCouleur(test, 'V', 100);
+            Outils.AttenuerCouleur(test, 'R', 100);
+
             test.Exporter(patharrivee);
 
             //test.toString();
