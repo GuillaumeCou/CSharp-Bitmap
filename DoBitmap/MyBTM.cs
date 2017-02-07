@@ -94,6 +94,9 @@ namespace DoBitmap
 
         }
 
+        /// <summary>
+        /// Fonction qui annule les valeurs bleues des pixels
+        /// </summary>
         public void SupprimerBleu()
         {
             foreach(Pixel p in Pix)
@@ -101,6 +104,9 @@ namespace DoBitmap
                 p.AttenuerBleu(255);
             }
         }
+        /// <summary>
+        /// Fonction qui annule les valeurs rouges des pixels
+        /// </summary>
         public void SupprimerRouge()
         {
             foreach (Pixel p in Pix)
@@ -108,6 +114,9 @@ namespace DoBitmap
                 p.AttenuerRouge(255);
             }
         }
+        /// <summary>
+        /// Fonction qui annule les valeurs vertes des pixels
+        /// </summary>
         public void SupprimerVert()
         {
             foreach (Pixel p in Pix)
