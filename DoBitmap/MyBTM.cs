@@ -16,13 +16,13 @@ namespace DoBitmap
         byte[] image;
         string path;
 
-        int offset;
+        int offset; // Taille des informations sur le fichier ( header + headerinfo)
         int largeur;
         int hauteur;
         int taille;
 
         Pixel[,] Pix;
-        int ajoutMultiple4 = 0;
+        int ajoutMultiple4 = 0; // Correspond au octets rajouter en fin de ligne binaire pour assurer la divisibilité par 4
 
         public string Path
         {
@@ -38,9 +38,11 @@ namespace DoBitmap
         /// <param name="Path">Chemin absolu menant au fichier bitmap</param>
         public MyBTM(string Path)
         {
+            // On extrait le code binaire du fichier
             path = Path;
             DataBitmap = File.ReadAllBytes(Path);
 
+            // On sépare les données (header , headerinfo, image)
             for (int i = 0; i < 14; i++)
                 header[i] = DataBitmap[i];
 
@@ -49,6 +51,8 @@ namespace DoBitmap
                 headerInfo[i] = DataBitmap[i + 14];
             }
 
+            // On récupère les dimension de l'image. (4 octets).
+            // On récupère aussi la taille du offset afin de savoir où démarre l'image.
             byte[] largeurBinaire = { headerInfo[4], headerInfo[5], headerInfo[6], headerInfo[7] };
             byte[] hauteurBinaire = { headerInfo[8], headerInfo[9], headerInfo[10], headerInfo[11] };
             byte[] offsetBinaire = { header[10], header[11], header[12], header[13] };
@@ -57,18 +61,22 @@ namespace DoBitmap
             hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
             offset = BitConverter.ToInt32(offsetBinaire, 0);
 
+            // On calcule la variable assurant la divisibilité par 4 du nombre d'octets par ligne.
+            // Cela nous sera utile pour créer la matrice de pixels sans prendre c'est octets "inutiles" pour nous.
             while (!((largeur + ajoutMultiple4) * 3 % 4 == 0))
                 ajoutMultiple4++;
 
             largeur += ajoutMultiple4;
 
+            // Il y a trois octets par pixel, donc la taille du tableau binaire est le triple des dimension de l'image.
             taille = (largeur * hauteur) * 3;
-
-
+            
+            // On extrait les données binaires de l'image
             image = new byte[largeur * hauteur * 3];
             for (int i = 0; i < image.Length; i++)
                 image[i] = DataBitmap[i + offset];
 
+            // Puis on place les pixel dans une matrice
             toPixel();
         }
 
@@ -82,12 +90,15 @@ namespace DoBitmap
             byte[] PrePix = new byte[3];
             int index = 0;
 
+            // Les 2 premières boucles permettent de se déplacer dans la matrice.
             for (int i = 0; i < hauteur; i++)
             {
                 for (int j = 0; j < largeur; j++)
                 {
+                    // Nous ne voulons pas des octets rajoutés pour la multiplicité de 4.
                     if (j < largeur - ajoutMultiple4)
                     {
+                        // On récupère les 3 octets de chaque pixel
                         byte[] tab = new byte[3];
                         for (int oct = 0; oct < 3; oct++)
                         {
@@ -96,6 +107,7 @@ namespace DoBitmap
 
                         Pix[(hauteur - 1 - i), j] = new Pixel(tab);
                     }
+                    // On avance de 3 dans le tableau "image" car pour un pixel, il y a trois valeurs binaires.
                     index += 3;
                 }
             }
@@ -106,6 +118,7 @@ namespace DoBitmap
         /// </summary>
         public void toString()
         {
+            // On copie toute les donnes du header et du headerinfo qui ne changent pas
             string StringHeader = null;
             for (int i = 0; i < header.Length; i++)
                 StringHeader += header[i] + " ";
@@ -114,6 +127,8 @@ namespace DoBitmap
             for (int i = 0; i < headerInfo.Length; i++)
                 StringHeaderInfo += headerInfo[i] + " ";
 
+
+            // Puis on copie les valeur binaire de l'image de base
             string StringImage = null;
             for (int i = 0; i < image.Length; i++)
             {
@@ -133,6 +148,8 @@ namespace DoBitmap
 
         }
 
+        #region TEST SUPRESSION COULEURS
+        /*
         /// <summary>
         /// Fonction qui annule les valeurs bleues des pixels
         /// </summary>
@@ -163,6 +180,8 @@ namespace DoBitmap
                 p.AttenuerVert(255);
             }
         }
+        */
+        #endregion
 
 
         /// <summary>
@@ -190,6 +209,7 @@ namespace DoBitmap
                         // Si j est inférieur à la largeur moins les valeurs complémentaire pour la multiplicité de 4
                         if (j < largeur - ajoutMultiple4)
                         {
+                            // Les valeurs binaires commance en bas pour le pixel en haut et se lisent de gauche à droite.
                             DataExport[offset + index + oct] = Pix[(hauteur - 1 - i), j].Exporter(oct);
                         }
                         else
