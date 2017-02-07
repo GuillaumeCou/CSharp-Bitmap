@@ -16,11 +16,13 @@ namespace DoBitmap
         byte[] image;
         string path;
 
-        int largeur = 0;
-        int hauteur = 0;
+        int offset;
+        int largeur;
+        int hauteur;
         int taille;
 
         Pixel[,] Pix;
+        int ajoutMultiple4 = 0;
 
         public string Path
         {
@@ -49,15 +51,23 @@ namespace DoBitmap
 
             byte[] largeurBinaire = { headerInfo[4], headerInfo[5], headerInfo[6], headerInfo[7] };
             byte[] hauteurBinaire = { headerInfo[8], headerInfo[9], headerInfo[10], headerInfo[11] };
+            byte[] offsetBinaire = { header[10], header[11], header[12], header[13] };
 
-            largeur = BitConverter.ToInt32(largeurBinaire,0);
+            largeur = BitConverter.ToInt32(largeurBinaire, 0);
             hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
+            offset = BitConverter.ToInt32(offsetBinaire, 0);
 
-            taille = (largeur * hauteur)*3;
+            while (!((largeur + ajoutMultiple4) * 3 % 4 == 0))
+                ajoutMultiple4++;
 
-            image = new byte[taille];
-            for (int i = 0; i < taille; i++)
-                image[i] = DataBitmap[i + 54];
+            largeur += ajoutMultiple4;
+
+            taille = (largeur * hauteur) * 3;
+
+
+            image = new byte[largeur * hauteur * 3];
+            for (int i = 0; i < image.Length; i++)
+                image[i] = DataBitmap[i + offset];
 
             toPixel();
         }
@@ -67,19 +77,27 @@ namespace DoBitmap
         /// </summary>
         private void toPixel()
         {
-            Pix = new Pixel[hauteur, largeur];
+            Pix = new Pixel[hauteur, largeur - ajoutMultiple4];
 
             byte[] PrePix = new byte[3];
-            int index = taille - 1;
+            int index = 0;
 
             for (int i = 0; i < hauteur; i++)
             {
                 for (int j = 0; j < largeur; j++)
                 {
-                    Pix[hauteur - 1 - i, largeur - 1 - j] = new Pixel(new byte[] { DataBitmap[index - 2], DataBitmap[index - 1], DataBitmap[index] });
-                }
+                    if (j < largeur - ajoutMultiple4)
+                    {
+                        byte[] tab = new byte[3];
+                        for (int oct = 0; oct < 3; oct++)
+                        {
+                            tab[oct] = image[index + oct];
+                        }
 
-                index -= 3;
+                        Pix[(hauteur - 1 - i), j] = new Pixel(tab);
+                    }
+                    index += 3;
+                }
             }
         }
 
@@ -98,10 +116,18 @@ namespace DoBitmap
 
             string StringImage = null;
             for (int i = 0; i < image.Length; i++)
+            {
+                if (i % (largeur * 3) == 0 && i != 0)
+                    StringImage += "\n";
+
                 StringImage += image[i] + "\t";
 
-            Console.WriteLine("HEADER : \n \n" + StringHeader);
-            Console.WriteLine("HEADERINFO : \n \n" + StringHeaderInfo);
+
+            }
+
+
+            Console.WriteLine("HEADER : \n \n" + StringHeader + "\n");
+            Console.WriteLine("HEADERINFO : \n \n" + StringHeaderInfo + "\n");
             Console.WriteLine("IMAGE : \n \n" + StringImage);
 
 
@@ -145,21 +171,35 @@ namespace DoBitmap
         /// <param name="Path">Chemin de destination</param>
         public void Exporter(string PathDestination)
         {
-            int index = taille - 1+54;
+            byte[] DataExport = new byte[DataBitmap.Length];
 
+            for (int i = 0; i < offset; i++)
+                DataExport[i] = DataBitmap[i];
 
-            for(int i = 0; i< hauteur; i++)
+            int index = 0;
+
+            // Indice de la ligne de la matrice
+            for (int i = 0; i < hauteur; i++)
             {
-                for(int j =0; j < largeur; j++)
+                // Indice de la colonne de la matrice
+                for (int j = 0; j < largeur; j++)
                 {
-                    for(int o = 0; o < 3; o++)
+                    // Indice de la couleur du (B,V ou R) du pixel
+                    for (int oct = 0; oct < 3; oct++)
                     {
-                        DataBitmap[index--] = Pix[i, j].Exporter(o);
+                        // Si j est inférieur à la largeur moins les valeurs complémentaire pour la multiplicité de 4
+                        if (j < largeur - ajoutMultiple4)
+                        {
+                            DataExport[offset + index + oct] = Pix[(hauteur - 1 - i), j].Exporter(oct);
+                        }
+                        else
+                            DataExport[offset + index + oct] = 0;
                     }
-                }
+                    index = index + 3;
+                }  
             }
-
-            File.WriteAllBytes(PathDestination, DataBitmap);
+            
+            File.WriteAllBytes(PathDestination, DataExport);
         }
     }
 }
