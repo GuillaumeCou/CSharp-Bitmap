@@ -45,13 +45,20 @@ namespace DoBitmap
             get { return offset; }
         }
 
-        public void toString()
+        /// <summary>
+        /// Fonction qui retourne un string contenant les informations du "header" de l'image.
+        /// </summary>
+        /// <returns></returns>
+        public string toString()
         {
             string mot = null;
 
             mot += "Header :\n\n";
-            mot += "Signature =" + signature + "\n";
-            mot
+            mot += "Signature = " + signature + "\n";
+            mot += "Taille du fichier = " + tailleTotaleFichier + "\n";
+            mot += "Offset =" + offset + "\n";
+
+            return mot;
         }
     }
 }

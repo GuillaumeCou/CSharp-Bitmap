@@ -10,16 +10,10 @@ namespace DoBitmap
     class MyBTM
     {
         byte[] DataBitmap;
-        //string type = null;
         Header head;
-        byte[] headerInfo = new byte[50];
+        HeaderInfo headinfo;
         byte[] image;
         string path;
-
-        int offset;
-        int largeur;
-        int hauteur;
-        int taille;
 
         Pixel[,] Pix;
         int ajoutMultiple4 = 0;
@@ -42,31 +36,24 @@ namespace DoBitmap
             DataBitmap = File.ReadAllBytes(Path);
 
             byte[] header = new byte[14];
+
             for (int i = 0; i < 14; i++)
                 header[i] = DataBitmap[i];
 
             head = new Header(header);
 
+            byte[] headerInfo = new byte[50];
             for (int i = 0; i < 40; i++)
             {
                 headerInfo[i] = DataBitmap[i + 14];
             }
-
-            byte[] largeurBinaire = { headerInfo[4], headerInfo[5], headerInfo[6], headerInfo[7] };
-            byte[] hauteurBinaire = { headerInfo[8], headerInfo[9], headerInfo[10], headerInfo[11] };
-
-            largeur = BitConverter.ToInt32(largeurBinaire, 0);
-            hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
-
-            while (!((largeur + ajoutMultiple4) * 3 % 4 == 0))
-                ajoutMultiple4++;
-
-            largeur += ajoutMultiple4;
-
-            taille = (largeur * hauteur) * 3;
+            headinfo = new HeaderInfo(headerInfo);
 
 
-            image = new byte[largeur * hauteur * 3];
+
+
+            image = new byte[headinfo.TailleImage * 3];
+
             for (int i = 0; i < image.Length; i++)
                 image[i] = DataBitmap[i + head.Offset];
 
@@ -78,7 +65,9 @@ namespace DoBitmap
         /// </summary>
         private void toPixel()
         {
-            Pix = new Pixel[hauteur, largeur - ajoutMultiple4];
+            int hauteur = headinfo.Hauteur;
+            int largeur = headinfo.Largeur;
+            Pix = new Pixel[hauteur, largeur];
 
             byte[] PrePix = new byte[3];
             int index = 0;
@@ -87,7 +76,7 @@ namespace DoBitmap
             {
                 for (int j = 0; j < largeur; j++)
                 {
-                    if (j < largeur - ajoutMultiple4)
+                    if (j < largeur)
                     {
                         byte[] tab = new byte[3];
                         for (int oct = 0; oct < 3; oct++)
@@ -107,23 +96,17 @@ namespace DoBitmap
         /// </summary>
         public void toString()
         {
-            string StringHeader = null;
-            for (int i = 0; i < head.TailleHeader; i++)
-                StringHeader += header[i] + " ";
+            string StringHeader = head.toString();
 
-            string StringHeaderInfo = null;
-            for (int i = 0; i < headerInfo.Length; i++)
-                StringHeaderInfo += headerInfo[i] + " ";
+            string StringHeaderInfo = headinfo.toString();
 
             string StringImage = null;
             for (int i = 0; i < image.Length; i++)
             {
-                if (i % (largeur * 3) == 0 && i != 0)
+                if (i % (headinfo.LargeurAug * 3) == 0 && i != 0)
                     StringImage += "\n";
 
                 StringImage += image[i] + "\t";
-
-
             }
 
 
@@ -172,6 +155,10 @@ namespace DoBitmap
         /// <param name="Path">Chemin de destination</param>
         public void Exporter(string PathDestination)
         {
+            int largeur = headinfo.Largeur;
+            int hauteur = headinfo.Hauteur;
+            int offset = head.Offset;
+
             byte[] DataExport = new byte[DataBitmap.Length];
 
             for (int i = 0; i < offset; i++)
@@ -189,7 +176,7 @@ namespace DoBitmap
                     for (int oct = 0; oct < 3; oct++)
                     {
                         // Si j est inférieur à la largeur moins les valeurs complémentaire pour la multiplicité de 4
-                        if (j < largeur - ajoutMultiple4)
+                        if (j < largeur)
                         {
                             DataExport[offset + index + oct] = Pix[(hauteur - 1 - i), j].Exporter(oct);
                         }
