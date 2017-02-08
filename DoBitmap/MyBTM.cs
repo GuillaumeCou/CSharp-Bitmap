@@ -16,7 +16,6 @@ namespace DoBitmap
         string path;
 
         Pixel[,] Pix;
-        int ajoutMultiple4 = 0;
 
         public string Path
         {
@@ -52,7 +51,7 @@ namespace DoBitmap
 
 
 
-            image = new byte[headinfo.TailleImage * 3];
+            image = new byte[headinfo.TailleImageAug * 3];
 
             for (int i = 0; i < image.Length; i++)
                 image[i] = DataBitmap[i + head.Offset];

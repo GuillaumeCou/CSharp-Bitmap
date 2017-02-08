@@ -11,6 +11,7 @@ namespace DoBitmap
         int largeur;
         int hauteur;
         int ajoutMultiple4;
+        int tailleAug;
 
         public HeaderInfo(byte[] Data)
         {
@@ -23,6 +24,8 @@ namespace DoBitmap
             // Tant que la largeur (le nombre de pixel par ligne) n'est pas un multiple de 4
             while (!((largeur + ajoutMultiple4) * 3 % 4 == 0))
                 ajoutMultiple4++;
+
+            tailleAug = (largeur + ajoutMultiple4) * hauteur;
         }
 
         public string toString()
@@ -55,6 +58,11 @@ namespace DoBitmap
         public int LargeurAug
         {
             get { return (largeur + ajoutMultiple4); }
+        }
+
+        public int TailleImageAug
+        {
+            get { return tailleAug; }
         }
 
         public int TailleImage

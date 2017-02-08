@@ -19,7 +19,7 @@ namespace DoBitmap
             //test.SupprimerVert();
             //test.Exporter(patharrivee);
 
-            test.toString();
+            //test.toString();
 
             Console.ReadKey();
             
