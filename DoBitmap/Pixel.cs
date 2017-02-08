@@ -86,40 +86,57 @@ namespace DoBitmap
             }
         }
 
+        public void Attenuer(int Attenuation, char RVG)
+        {
+            switch (RVG)
+            {
+                case 'R':
+                    AttenuerRouge(Attenuation);
+                    break;
+
+                case 'V':
+                    AttenuerVert(Attenuation);
+                    break;
+                case 'B':
+                    AttenuerBleu(Attenuation);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Fonction qui atténue la couleur.
         /// </summary>
         /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerBleu(int attenuation)
+        void AttenuerBleu(int attenuation)
         {
-            if (attenuation >= bleu)
+            if (attenuation >= 100)
                 bleu = 0;
             else
-                bleu -= Math.Abs(attenuation);
+                bleu = (bleu * (100 - attenuation)) / 100; ;
         }
 
         /// <summary>
         /// Fonction qui atténue la couleur.
         /// </summary>
         /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerVert(int attenuation)
+        void AttenuerVert(int attenuation)
         {
-            if (attenuation >= vert)
+            if (attenuation >= 100)
                 vert = 0;
             else
-                vert -= Math.Abs(attenuation);
+                vert = (vert * (100 - attenuation)) / 100; ;
         }
 
         /// <summary>
         /// Fonction qui atténue la couleur.
         /// </summary>
         /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerRouge(int attenuation)
+        void AttenuerRouge(int attenuation)
         {
-            if (attenuation >= rouge)
+            if (attenuation >= 100)
                 rouge = 0;
             else
-                rouge -= Math.Abs(attenuation);
+                rouge = (rouge * (100 - attenuation))/100;
         }
     }
 }

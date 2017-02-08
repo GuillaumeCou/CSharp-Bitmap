@@ -116,34 +116,12 @@ namespace DoBitmap
 
         }
 
-        /// <summary>
-        /// Fonction qui annule les valeurs bleues des pixels
-        /// </summary>
-        public void SupprimerBleu()
+        
+        public void AttenuerCouleur(int Attenuation, char RVB)
         {
-            foreach (Pixel p in Pix)
+            foreach(Pixel p in Pix)
             {
-                p.AttenuerBleu(255);
-            }
-        }
-        /// <summary>
-        /// Fonction qui annule les valeurs rouges des pixels
-        /// </summary>
-        public void SupprimerRouge()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerRouge(255);
-            }
-        }
-        /// <summary>
-        /// Fonction qui annule les valeurs vertes des pixels
-        /// </summary>
-        public void SupprimerVert()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerVert(255);
+                p.Attenuer(Attenuation, RVB);
             }
         }
 
