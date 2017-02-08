@@ -11,7 +11,7 @@ namespace DoBitmap
     {
         byte[] DataBitmap;
         //string type = null;
-        byte[] header = new byte[14];
+        Header head;
         byte[] headerInfo = new byte[50];
         byte[] image;
         string path;
@@ -41,8 +41,11 @@ namespace DoBitmap
             path = Path;
             DataBitmap = File.ReadAllBytes(Path);
 
+            byte[] header = new byte[14];
             for (int i = 0; i < 14; i++)
                 header[i] = DataBitmap[i];
+
+            head = new Header(header);
 
             for (int i = 0; i < 40; i++)
             {
@@ -51,11 +54,9 @@ namespace DoBitmap
 
             byte[] largeurBinaire = { headerInfo[4], headerInfo[5], headerInfo[6], headerInfo[7] };
             byte[] hauteurBinaire = { headerInfo[8], headerInfo[9], headerInfo[10], headerInfo[11] };
-            byte[] offsetBinaire = { header[10], header[11], header[12], header[13] };
 
             largeur = BitConverter.ToInt32(largeurBinaire, 0);
             hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
-            offset = BitConverter.ToInt32(offsetBinaire, 0);
 
             while (!((largeur + ajoutMultiple4) * 3 % 4 == 0))
                 ajoutMultiple4++;
@@ -67,7 +68,7 @@ namespace DoBitmap
 
             image = new byte[largeur * hauteur * 3];
             for (int i = 0; i < image.Length; i++)
-                image[i] = DataBitmap[i + offset];
+                image[i] = DataBitmap[i + head.Offset];
 
             toPixel();
         }
@@ -107,7 +108,7 @@ namespace DoBitmap
         public void toString()
         {
             string StringHeader = null;
-            for (int i = 0; i < header.Length; i++)
+            for (int i = 0; i < head.TailleHeader; i++)
                 StringHeader += header[i] + " ";
 
             string StringHeaderInfo = null;
