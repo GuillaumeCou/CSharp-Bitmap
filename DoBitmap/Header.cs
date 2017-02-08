@@ -50,7 +50,7 @@ namespace DoBitmap
             string mot = null;
 
             mot += "Header :\n\n";
-            mot += "Signature = signature + "\n";
+            mot += "Signature =" + signature + "\n";
             mot
         }
     }
