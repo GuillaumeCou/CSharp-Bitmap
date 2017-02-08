@@ -9,6 +9,8 @@ namespace DoBitmap
 {
     class MyBTM
     {
+
+        #region VARIABLES
         byte[] DataBitmap;
         //string type = null;
         byte[] header = new byte[14];
@@ -23,6 +25,8 @@ namespace DoBitmap
 
         Pixel[,] Pix;
         int ajoutMultiple4 = 0; // Correspond au octets rajouter en fin de ligne binaire pour assurer la divisibilité par 4
+
+        #endregion
 
         public string Path
         {
@@ -74,7 +78,7 @@ namespace DoBitmap
 
             // Il y a trois octets par pixel, donc la taille du tableau binaire est le triple des dimension de l'image.
             taille = (largeur * hauteur) * 3;
-            
+
             // On extrait les données binaires de l'image
             image = new byte[largeur * hauteur * 3];
             for (int i = 0; i < image.Length; i++)
@@ -220,9 +224,9 @@ namespace DoBitmap
                             DataExport[offset + index + oct] = 0;
                     }
                     index = index + 3;
-                }  
+                }
             }
-            
+
             File.WriteAllBytes(PathDestination, DataExport);
         }
     }

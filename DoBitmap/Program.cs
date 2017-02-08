@@ -11,18 +11,18 @@ namespace DoBitmap
     {
         static void Main(string[] args)
         {
-            string path = @"C:\Users\couzi\Documents\Cours\Projet Info\lac_en_montagne.bmp";
+            string path = @"C:\Users\couzi\Documents\Cours\Projet Info\test.bmp";
             string patharrivee = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001-1.bmp";
 
             MyBTM test = new MyBTM(path);
 
             //Outils.AttenuerCouleur(test, 'B', 50);
-            Outils.AttenuerCouleur(test, 'V', 100);
-            Outils.AttenuerCouleur(test, 'R', 100);
+            //Outils.AttenuerCouleur(test, 'V', 100);
+            //Outils.AttenuerCouleur(test, 'R', 100);
 
-            test.Exporter(patharrivee);
+            //test.Exporter(patharrivee);
 
-            //test.toString();
+            test.toString();
 
             Console.ReadKey();
             
