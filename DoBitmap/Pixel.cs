@@ -86,15 +86,19 @@ namespace DoBitmap
             }
         }
 
+        /// <summary>
+        /// Fonction qui atténue une couleur d'un pixel
+        /// </summary>
+        /// <param name="Pourcentage">Taux d'atténuation</param>
+        /// <param name="RVG">Couleur Choisie</param>
         public void Attenuer(int Pourcentage, char RVB)
         {
             switch (RVB)
             {
-                default:
-                    break;
                 case 'R':
                     AttenuerRouge(Pourcentage);
                     break;
+
                 case 'V':
                     AttenuerVert(Pourcentage);
                     break;
@@ -108,36 +112,36 @@ namespace DoBitmap
         /// Fonction qui atténue la couleur.
         /// </summary>
         /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerBleu(int attenuation)
+        void AttenuerBleu(int attenuation)
         {
-            if (attenuation >= bleu)
+            if (attenuation >= 100)
                 bleu = 0;
             else
-                bleu -= Math.Abs(attenuation);
+                bleu = (bleu * (100 - attenuation)) / 100; ;
         }
 
         /// <summary>
         /// Fonction qui atténue la couleur.
         /// </summary>
         /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerVert(int attenuation)
+        void AttenuerVert(int attenuation)
         {
-            if (attenuation >= vert)
+            if (attenuation >= 100)
                 vert = 0;
             else
-                vert -= Math.Abs(attenuation);
+                vert = (vert * (100 - attenuation)) / 100; ;
         }
 
         /// <summary>
         /// Fonction qui atténue la couleur.
         /// </summary>
         /// <param name="attenuation">Nombre compris entre 0 et 255</param>
-        public void AttenuerRouge(int attenuation)
+        void AttenuerRouge(int attenuation)
         {
-            if (attenuation >= rouge)
+            if (attenuation >= 100)
                 rouge = 0;
             else
-                rouge -= Math.Abs(attenuation);
+                rouge = (rouge * (100 - attenuation)) / 100;
         }
     }
 }

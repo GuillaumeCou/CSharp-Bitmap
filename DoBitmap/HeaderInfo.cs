@@ -8,15 +8,22 @@ namespace DoBitmap
 {
     class HeaderInfo
     {
+        byte[] data;
         int largeur;
         int hauteur;
         int ajoutMultiple4;
         int tailleAug;
 
+
         public HeaderInfo(byte[] Data)
         {
-            byte[] largeurBinaire = { Data[4], Data[5], Data[6], Data[7] };
-            byte[] hauteurBinaire = { Data[8], Data[9], Data[10], Data[11] };
+            data = new byte[Data.Length];
+            for(int i = 0; i < data.Length; i++)
+            {
+                data[i] = Data[i];
+            }
+            byte[] largeurBinaire = { data[4], data[5], data[6], data[7] };
+            byte[] hauteurBinaire = { data[8], data[9], data[10], data[11] };
 
             largeur = BitConverter.ToInt32(largeurBinaire, 0);
             hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
@@ -28,6 +35,10 @@ namespace DoBitmap
             tailleAug = (largeur + ajoutMultiple4) * hauteur;
         }
 
+        /// <summary>
+        /// Fonction qui renvoie une chaîne de caractères contenant les informations du HeaderInfo de l'image.
+        /// </summary>
+        /// <returns></returns>
         public string toString()
         {
             string mot = null;
@@ -68,6 +79,25 @@ namespace DoBitmap
         public int TailleImage
         {
             get { return (largeur * hauteur); }
+        }
+
+        public byte[] ValeursBinaires
+        {
+            get { return data; }
+        }
+
+        /// <summary>
+        /// Fonction qui copie et retourne les valeurs binaire du HeaderInfo
+        /// </summary>
+        /// <returns></returns>
+        public byte[] Clone()
+        {
+            byte[] tab = new byte[data.Length];
+
+            for (int i = 0; i < tab.Length; i++)
+                tab[i] = data[i];
+
+            return tab;
         }
     }
 }

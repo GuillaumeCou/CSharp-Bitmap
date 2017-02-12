@@ -11,15 +11,21 @@ namespace DoBitmap
     {
         static void Main(string[] args)
         {
-            string path = @"C:\Users\couzi\Documents\Cours\Projet Info\test.bmp";
-            string patharrivee = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001-1.bmp";
+            string pathLac = @"C:\Users\couzi\Documents\Cours\Projet Info\lac_en_montagne.bmp";
+            string pathAmis = @"C:\Users\couzi\Documents\Cours\Projet Info\zh.bmp";
+            string pathlena = @"C:\Users\couzi\Documents\Cours\Projet Info\lena.bmp";
+            string patharrivee = @"C:\Users\couzi\Documents\Cours\Projet Info\Sortie.bmp";
 
-            MyBTM test = new MyBTM(path);
-            //test.SupprimerBleu();
-            //test.SupprimerVert();
+            MyBTM lac = new MyBTM(pathLac);
+            MyBTM amis = new MyBTM(pathAmis);
+            MyBTM test = new MyBTM(pathAmis);
+
+
+            //test.Attenuer(100, 'R');
             //test.Exporter(patharrivee);
-
             //test.toString();
+
+            Outils.Superposition(lac, amis, patharrivee);
 
             Console.ReadKey();
             

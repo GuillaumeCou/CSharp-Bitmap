@@ -8,6 +8,8 @@ namespace DoBitmap
 {
     class Header
     {
+        byte[] data;
+
         string signature = null;
 
         int tailleTotaleFichier;
@@ -20,16 +22,22 @@ namespace DoBitmap
         /// <param name="Data">Tableau d'octet de taille 14</param>
         public Header(byte[] Data)
         {
-            signature += (char)Data[0] + (char)Data[1];
+            data = new byte[Data.Length];
+            for(int i = 0; i <  data.Length; i++)
+            {
+                data[i] = Data[i];
+            }
 
-            byte[] tailleBinaire = { Data[2], Data[3], Data[4], Data[5] };
+            signature += (char)data[0] + (char)data[1];
 
-            byte[] offsetBinaire = { Data[10], Data[11], Data[12], Data[13] };
+            byte[] tailleBinaire = { data[2], data[3], data[4], data[5] };
+
+            byte[] offsetBinaire = { data[10], data[11], data[12], data[13] };
 
             offset = BitConverter.ToInt32(offsetBinaire, 0);
             tailleTotaleFichier = BitConverter.ToInt32(tailleBinaire, 0);
         }
-
+        
         public string Signature
         {
             get { return signature; }
@@ -60,5 +68,12 @@ namespace DoBitmap
 
             return mot;
         }
+
+        public byte[] ValeursBinaires
+        {
+            get { return data; }
+        }
+
+        
     }
 }

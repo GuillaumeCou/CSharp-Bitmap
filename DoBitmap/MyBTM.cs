@@ -24,10 +24,22 @@ namespace DoBitmap
                 return path;
             }
         }
-
+        public Header Head
+        {
+            get { return head; }
+        }
+        public HeaderInfo HeadInfo
+        {
+            get { return headinfo; }
+        }
         public Pixel[,] MatricePixel
         {
             get { return Pix; }
+        }
+
+        public MyBTM(MyBTM Image)
+        {
+            path = Image.Path;
         }
 
         /// <summary>
@@ -121,36 +133,39 @@ namespace DoBitmap
 
         }
 
-        /// <summary>
-        /// Fonction qui annule les valeurs bleues des pixels
-        /// </summary>
-        public void SupprimerBleu()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerBleu(255);
-            }
-        }
-        /// <summary>
-        /// Fonction qui annule les valeurs rouges des pixels
-        /// </summary>
-        public void SupprimerRouge()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerRouge(255);
-            }
-        }
-        /// <summary>
-        /// Fonction qui annule les valeurs vertes des pixels
-        /// </summary>
-        public void SupprimerVert()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerVert(255);
-            }
-        }
+        #region Test Suppression de couleur
+        ///// <summary>
+        ///// Fonction qui annule les valeurs bleues des pixels
+        ///// </summary>
+        //public void SupprimerBleu()
+        //{
+        //    foreach (Pixel p in Pix)
+        //    {
+        //        p.AttenuerBleu(255);
+        //    }
+        //}
+        ///// <summary>
+        ///// Fonction qui annule les valeurs rouges des pixels
+        ///// </summary>
+        //public void SupprimerRouge()
+        //{
+        //    foreach (Pixel p in Pix)
+        //    {
+        //        p.AttenuerRouge(255);
+        //    }
+        //}
+        ///// <summary>
+        ///// Fonction qui annule les valeurs vertes des pixels
+        ///// </summary>
+        //public void SupprimerVert()
+        //{
+        //    foreach (Pixel p in Pix)
+        //    {
+        //        p.AttenuerVert(255);
+        //    }
+        //}
+
+        #endregion
 
 
         /// <summary>
@@ -188,10 +203,19 @@ namespace DoBitmap
                             DataExport[offset + index + oct] = 0;
                     }
                     index = index + 3;
-                }  
+                }
             }
-            
+
             File.WriteAllBytes(PathDestination, DataExport);
+        }
+
+
+        public void Attenuer(int Pourcentage, char RVB)
+        {
+            foreach (Pixel p in Pix)
+            {
+                p.Attenuer(Pourcentage, RVB);
+            }
         }
     }
 }
