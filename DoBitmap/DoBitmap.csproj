@@ -46,6 +46,7 @@
     <Compile Include="Header.cs" />
     <Compile Include="HeaderInfo.cs" />
     <Compile Include="MyBTM.cs" />
+    <Compile Include="Outils.cs" />
     <Compile Include="Pixel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

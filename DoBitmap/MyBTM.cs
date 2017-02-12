@@ -25,6 +25,11 @@ namespace DoBitmap
             }
         }
 
+        public Pixel[,] MatricePixel
+        {
+            get { return Pix; }
+        }
+
         /// <summary>
         /// Initialise une nouvelle instance de la classe "MyBTM"
         /// </summary>

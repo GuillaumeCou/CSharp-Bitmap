@@ -86,6 +86,24 @@ namespace DoBitmap
             }
         }
 
+        public void Attenuer(int Pourcentage, char RVB)
+        {
+            switch (RVB)
+            {
+                default:
+                    break;
+                case 'R':
+                    AttenuerRouge(Pourcentage);
+                    break;
+                case 'V':
+                    AttenuerVert(Pourcentage);
+                    break;
+                case 'B':
+                    AttenuerBleu(Pourcentage);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Fonction qui atténue la couleur.
         /// </summary>
