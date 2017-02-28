@@ -18,37 +18,32 @@ namespace DoBitmap
             }
         }
 
-        public static void Superposition(MyBTM Image1, MyBTM Image2, string PathDestination = @"C:\Users\couzi\Documents\Cours\Projet Info\Test001-1.bmp")
+        /// <summary>
+        /// Fonction qui superpose deux images
+        /// </summary>
+        /// <param name="Image1">Image située devant</param>
+        /// <param name="Image2">Image située derrière (elle donne sa dimension à l'image de sortie)</param>
+        /// <param name="PathDestination">Chemin où sera créé le fichier de la nouvelle image.</param>
+        public static void Superposition(MyBTM Image1, MyBTM Image2, string PathDestination)
         {
-            // La matrice1 est supposée plus petite que la matrice2
-            Pixel[,] MatPP = Image1.MatricePixel;
-            Pixel[,] MatPG = Image2.MatricePixel;
-            bool AjoutPossible = false;
 
-            if (MatPP.GetLength(0) < MatPG.GetLength(0) && MatPP.GetLength(1) < MatPG.GetLength(1))
-                AjoutPossible = true;
+            Pixel[,] MatAvant = Image1.MatricePixel;
+            Pixel[,] MatArriere = Image2.MatricePixel;
 
-            if (MatPP.GetLength(0) > MatPG.GetLength(0) && MatPP.GetLength(1) > MatPG.GetLength(1))
-            {
-                Pixel[,] Var = MatPP;
-                MatPP = MatPG;
-                MatPG = Var;
-                AjoutPossible = true;
-            }
+            int dimColonne = Minimum(MatAvant.GetLength(0), MatArriere.GetLength(0));
+            int dimLigne = Minimum(MatAvant.GetLength(1), MatArriere.GetLength(1));
 
-
-            if (AjoutPossible)
-            {
-                for (int i = 0; i < MatPP.GetLength(0); i++)
-                {
-                    for (int j = 0; j < MatPP.GetLength(1); j++)
-                    {
-                        MatPG[i, j] = MatPP[i, j];
-                    }
-                }
-            }
-
+            
+            
             Image2.Exporter(PathDestination);
+        }
+
+        static int Minimum(int a, int b)
+        {
+            if (a <= b)
+                return a;
+            else
+                return b;
         }
     }
 }

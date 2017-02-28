@@ -40,6 +40,30 @@ namespace DoBitmap
         public MyBTM(MyBTM Image)
         {
             path = Image.Path;
+
+            head = new Header(Image.Head.ValeursBinaires);
+            headinfo = new HeaderInfo(Image.HeadInfo.ValeursBinaires);
+
+            image = Image.CloneImage();
+
+            DataBitmap = new byte[head.TailleFichier];
+            int index = 0;
+            for (int i = 0; i < head.TailleHeader ; i++)
+            {
+                DataBitmap[i] = head.ValeursBinaires[i];
+            }
+            index += head.TailleHeader;
+            for(int i = 0; i < headinfo.TailleHeaderInfo; i++)
+            {
+                DataBitmap[(i + index)] = headinfo.ValeursBinaires[i];
+            }
+            index += headinfo.TailleHeaderInfo;
+            for(int i = 0; i < image.Length; i++)
+            {
+                DataBitmap[(i + index)] = image[i];
+            }
+
+            toPixel();
         }
 
         /// <summary>
@@ -217,5 +241,19 @@ namespace DoBitmap
                 p.Attenuer(Pourcentage, RVB);
             }
         }
+
+
+        public byte[] CloneImage()
+        {
+            byte[] tab = new byte[image.Length];
+
+            for (int i = 0; i < tab.Length; i++)
+            {
+                tab[i] = image[i];
+            }
+
+            return tab;
+        }
+
     }
 }

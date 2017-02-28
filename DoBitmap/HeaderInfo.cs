@@ -81,6 +81,11 @@ namespace DoBitmap
             get { return (largeur * hauteur); }
         }
 
+        public int TailleHeaderInfo
+        {
+            get { return data.Length; }
+        }
+
         public byte[] ValeursBinaires
         {
             get { return data; }

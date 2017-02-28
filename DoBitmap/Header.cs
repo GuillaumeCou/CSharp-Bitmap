@@ -53,6 +53,11 @@ namespace DoBitmap
             get { return offset; }
         }
 
+        public int TailleHeader
+        {
+            get { return data.Length; }
+        }
+
         /// <summary>
         /// Fonction qui retourne un string contenant les informations du "header" de l'image.
         /// </summary>
