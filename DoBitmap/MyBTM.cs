@@ -10,19 +10,12 @@ namespace DoBitmap
     class MyBTM
     {
         byte[] DataBitmap;
-        //string type = null;
-        byte[] header = new byte[14];
-        byte[] headerInfo = new byte[50];
+        Header head;
+        HeaderInfo headinfo;
         byte[] image;
         string path;
 
-        int offset;
-        int largeur;
-        int hauteur;
-        int taille;
-
         Pixel[,] Pix;
-        int ajoutMultiple4 = 0;
 
         public string Path
         {
@@ -41,33 +34,27 @@ namespace DoBitmap
             path = Path;
             DataBitmap = File.ReadAllBytes(Path);
 
+            byte[] header = new byte[14];
+
             for (int i = 0; i < 14; i++)
                 header[i] = DataBitmap[i];
 
+            head = new Header(header);
+
+            byte[] headerInfo = new byte[50];
             for (int i = 0; i < 40; i++)
             {
                 headerInfo[i] = DataBitmap[i + 14];
             }
-
-            byte[] largeurBinaire = { headerInfo[4], headerInfo[5], headerInfo[6], headerInfo[7] };
-            byte[] hauteurBinaire = { headerInfo[8], headerInfo[9], headerInfo[10], headerInfo[11] };
-            byte[] offsetBinaire = { header[10], header[11], header[12], header[13] };
-
-            largeur = BitConverter.ToInt32(largeurBinaire, 0);
-            hauteur = BitConverter.ToInt32(hauteurBinaire, 0);
-            offset = BitConverter.ToInt32(offsetBinaire, 0);
-
-            while (!((largeur + ajoutMultiple4) * 3 % 4 == 0))
-                ajoutMultiple4++;
-
-            largeur += ajoutMultiple4;
-
-            taille = (largeur * hauteur) * 3;
+            headinfo = new HeaderInfo(headerInfo);
 
 
-            image = new byte[largeur * hauteur * 3];
+
+
+            image = new byte[headinfo.TailleImageAug * 3];
+
             for (int i = 0; i < image.Length; i++)
-                image[i] = DataBitmap[i + offset];
+                image[i] = DataBitmap[i + head.Offset];
 
             toPixel();
         }
@@ -77,7 +64,9 @@ namespace DoBitmap
         /// </summary>
         private void toPixel()
         {
-            Pix = new Pixel[hauteur, largeur - ajoutMultiple4];
+            int hauteur = headinfo.Hauteur;
+            int largeur = headinfo.Largeur;
+            Pix = new Pixel[hauteur, largeur];
 
             byte[] PrePix = new byte[3];
             int index = 0;
@@ -86,7 +75,7 @@ namespace DoBitmap
             {
                 for (int j = 0; j < largeur; j++)
                 {
-                    if (j < largeur - ajoutMultiple4)
+                    if (j < largeur)
                     {
                         byte[] tab = new byte[3];
                         for (int oct = 0; oct < 3; oct++)
@@ -106,23 +95,17 @@ namespace DoBitmap
         /// </summary>
         public void toString()
         {
-            string StringHeader = null;
-            for (int i = 0; i < header.Length; i++)
-                StringHeader += header[i] + " ";
+            string StringHeader = head.toString();
 
-            string StringHeaderInfo = null;
-            for (int i = 0; i < headerInfo.Length; i++)
-                StringHeaderInfo += headerInfo[i] + " ";
+            string StringHeaderInfo = headinfo.toString();
 
             string StringImage = null;
             for (int i = 0; i < image.Length; i++)
             {
-                if (i % (largeur * 3) == 0 && i != 0)
+                if (i % (headinfo.LargeurAug * 3) == 0 && i != 0)
                     StringImage += "\n";
 
                 StringImage += image[i] + "\t";
-
-
             }
 
 
@@ -133,34 +116,12 @@ namespace DoBitmap
 
         }
 
-        /// <summary>
-        /// Fonction qui annule les valeurs bleues des pixels
-        /// </summary>
-        public void SupprimerBleu()
+        
+        public void AttenuerCouleur(int Attenuation, char RVB)
         {
-            foreach (Pixel p in Pix)
+            foreach(Pixel p in Pix)
             {
-                p.AttenuerBleu(255);
-            }
-        }
-        /// <summary>
-        /// Fonction qui annule les valeurs rouges des pixels
-        /// </summary>
-        public void SupprimerRouge()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerRouge(255);
-            }
-        }
-        /// <summary>
-        /// Fonction qui annule les valeurs vertes des pixels
-        /// </summary>
-        public void SupprimerVert()
-        {
-            foreach (Pixel p in Pix)
-            {
-                p.AttenuerVert(255);
+                p.Attenuer(Attenuation, RVB);
             }
         }
 
@@ -171,6 +132,10 @@ namespace DoBitmap
         /// <param name="Path">Chemin de destination</param>
         public void Exporter(string PathDestination)
         {
+            int largeur = headinfo.Largeur;
+            int hauteur = headinfo.Hauteur;
+            int offset = head.Offset;
+
             byte[] DataExport = new byte[DataBitmap.Length];
 
             for (int i = 0; i < offset; i++)
@@ -188,7 +153,7 @@ namespace DoBitmap
                     for (int oct = 0; oct < 3; oct++)
                     {
                         // Si j est inférieur à la largeur moins les valeurs complémentaire pour la multiplicité de 4
-                        if (j < largeur - ajoutMultiple4)
+                        if (j < largeur)
                         {
                             DataExport[offset + index + oct] = Pix[(hauteur - 1 - i), j].Exporter(oct);
                         }
